@@ -8,5 +8,5 @@ npm insatll express node-cron mongoose --save
 ```
 
 # Folder configuration
-The first 20 folders are for the bakend development course.
+The first 20 folders are for the backend development course.
 The Rest of the folders are for the frontend development course.
