@@ -67,7 +67,7 @@ A typical GeoJSON field looks like:
 <field> : {<type> : <GeoJSON type>, coordinates : <coordinates>}
 
 {
-    "\_id": {
+    "_id": {
         "$oid": "639a04633c1f9b7df56d8d86"
         },
     "name": "Likhith",
