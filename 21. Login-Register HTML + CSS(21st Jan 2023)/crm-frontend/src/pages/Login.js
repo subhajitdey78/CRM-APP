@@ -62,15 +62,17 @@ function Login() {
     const loginFn = (e) => {
         const userId = document.getElementById("userId").value
         const password = document.getElementById("password").value
-        const data = {
+        const body = {
             userId: userId,
             password: password
         }
         e.preventDefault()
-        axios.post(BASE_URL + '/crm/api/auth/signin', data)
+        axios.post('https://127.0.0.1:7500/crm/api/auth/signin', body)
          .then( response => {
             console.log(response.data)
          })
+         .catch(console.log)
+         
         
     }
 
