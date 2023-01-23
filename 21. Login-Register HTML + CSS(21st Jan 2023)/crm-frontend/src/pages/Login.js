@@ -1,17 +1,11 @@
 import React, { useState } from "react"
 import { Dropdown, DropdownButton } from "react-bootstrap"
-const signupFn = (e) => {
+import axios from "axios"
 
-}
-
-const loginContent = () => {
-     return (
-        <h4>Login</h4>
-     )
-}
+const BASE_URL = process.env.REACT_APP_SERVER_URL
 
 function Login() {
-    const [showSignup, setshowSignup] = useState(true)
+    const [showSignup, setshowSignup] = useState(false)
     const [message, setMessage] = useState("")
     const [userType, setValue] = useState("CUSTOMER")
 
@@ -31,8 +25,7 @@ function Login() {
                     <div>
                         <input type="text" className="form-control" placeholder="User Id" id="userId" required />
                         </div>
-    
-                    <div>
+                        <div>
                         <input type="text" className="form-control" placeholder="Username" id="username" required  />
                         </div>
                         <input type="text" className="form-control" placeholder="Email" id="email" required />
@@ -64,6 +57,46 @@ function Login() {
             </div>
         )
     
+    }
+
+    const loginFn = (e) => {
+        const userId = document.getElementById("userId").value
+        const password = document.getElementById("password").value
+        const data = {
+            userId: userId,
+            password: password
+        }
+        e.preventDefault()
+        axios.post(BASE_URL + '/crm/api/auth/signin', data)
+         .then( response => {
+            console.log(response.data)
+         })
+        
+    }
+
+    const signupFn = (e) => {
+
+    }
+
+    const loginContent = () => {
+        return(
+        <div>
+            <h4 className="text-center">Login</h4>
+            <form onSubmit={loginFn}>
+                <div className="input-group m-1">
+                    <input type="text" className="form-control" placeholder="User Id" id="userId" required />  
+                </div>
+                <div className="input-group m-1">
+                    <input type="password" className="form-control" placeholder="password" id="password" required />
+                </div>
+                <div className="input-group m-1">
+                    <input type="submit" className="form-control btn btn-primary" value="Log in" /> 
+                </div>
+                <div className= "Signup-btn text-right text-info" onClick={toggleSignup}>Dont have an Account ? Signup</div>
+                <div className="auth-error-msg text-denger text-center">{message}</div>
+            </form>
+        </div>
+        )
     }
     
     return(
