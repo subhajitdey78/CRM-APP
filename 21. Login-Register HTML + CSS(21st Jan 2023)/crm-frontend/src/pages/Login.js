@@ -60,8 +60,8 @@ function Login() {
     }
 
     const loginFn = (e) => {
-        const userId = document.getElementById("userId").value
-        const password = document.getElementById("password").value
+        const userId = document.getElementById('userId').value
+        const password = document.getElementById('password').value
         const data = {
             "userId": userId,
             "password": password
@@ -97,7 +97,32 @@ function Login() {
 }
 
     const signupFn = (e) => {
+        const username = document.getElementById('username').value
+        const userId = document.getElementById('userId').value
+        const email = document.getElementById('email').value
+        const password = document.getElementById('password').value
 
+        const data = {
+            name: username,
+            userId: userId,
+            email: email,
+            userType: userType,
+            password: password
+        }
+        e.preventDefault()
+        
+        axios.post(BASE_URL + '/crm/api/auth/signup', data)
+          .then(response => {
+            if(response.status === 201) {
+                window.location.href = "/"
+            }
+          })
+          .catch(error => {
+            if(error.response && error.response.status === 400)
+              setMessage(error.response.data.message)
+              else
+                 console.log(error)
+          })
     }
 
     const loginContent = () => {
