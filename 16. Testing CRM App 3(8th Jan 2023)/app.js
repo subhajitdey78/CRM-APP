@@ -6,6 +6,9 @@ const User = require("./models/user.model")
 const app = express()
 const bcrypt = require('bcryptjs')
 const constants = require("./utils/constants")
+const cors = require('cors')
+app.use(cors())
+
 async function init() {
     let user = await User.findOne({ userId: "admin" })
 

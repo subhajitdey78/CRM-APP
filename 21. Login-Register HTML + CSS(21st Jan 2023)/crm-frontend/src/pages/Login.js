@@ -62,19 +62,39 @@ function Login() {
     const loginFn = (e) => {
         const userId = document.getElementById("userId").value
         const password = document.getElementById("password").value
-        const body = {
-            userId: userId,
-            password: password
+        const data = {
+            "userId": userId,
+            "password": password
         }
         e.preventDefault()
-        axios.post('https://127.0.0.1:7500/crm/api/auth/signin', body)
+        axios.post(BASE_URL + '/crm/api/auth/signin', data)
          .then( response => {
-            console.log(response.data)
+            if(response.status == 200) {
+                if (response.data.message) {
+                    setMessage(response.data.message)
+                } else {
+                    localStorage.setItem('name', response.data.name)
+                    localStorage.setItem('userId', response.data.userId)
+                    localStorage.setItem('email', response.data.email)
+                    localStorage.setItem('userType', response.data.userType)
+                    localStorage.setItem('userStatus', response)
+                    localStorage.setItem('token', response.data.accessToken)
+                    if(response.data.userType === "CUSTOMER")
+                      window.location.href = "/customer"
+                    else if(response.data.userType === 'ENGINEER')
+                      window.location.href =  "/engineer" 
+                    else
+                    window.location.href = "/admin"
+                }
+            }
          })
-         .catch(console.log)
-         
-        
-    }
+         .catch(error => {
+            if (error.response.status == 400 || error.response.status == 401)
+                setMessage(error.response.data.message)
+            else
+                console.log(error)
+        })
+}
 
     const signupFn = (e) => {
 
