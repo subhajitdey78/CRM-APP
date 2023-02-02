@@ -31,7 +31,7 @@ function Admin() {
                     <div>
                         {/*Main Admin DashBoard*/}
                         <h3 className="text-primary text-center">Welcome,</h3>
-                        <p className="text-muted text-center">Take a quick look at you admin stats below.</p>
+                        <p className="text-muted text-center">Take a quick look at you admin starts below.</p>
 
                         {/* cards */}
                         <div className="row my-5 mx-2 text-center">
