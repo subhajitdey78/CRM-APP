@@ -1,5 +1,7 @@
 import { CSidebar, CSidebarNav, CNavTitle, CNavItem } from '@coreui/react';
-// import '../styles/sidebar.css'
+import CIcon from '@coreui/icons-react'
+import {cilHome} from '@coreui/icons'
+import '../styles/sidebar.css'
 import { Link } from 'react-router-dom';
 import React from 'react';
 function Sidebar() {
@@ -11,25 +13,20 @@ function Sidebar() {
     return (
         <CSidebar unfoldable className= 'vh-100 bg-black'>
             <CSidebarNav>
-                <CNavItem href="#" className="bg-dark">
-                    <i className='bi bi-bar-chart-fill text-white m-2'></i>
-                    <h5 className='text-white mx-3 my-1 fw-bolder'>TETHERX</h5>
-                </CNavItem>
-
-                <CNavTitle>
-                    A CRM app for all ypur needs
+                <CNavTitle className= 'text-light fw-normal'>
+                     CRM App
                 </CNavTitle>
 
 
                 <CNavItem href='#'>
-                    <i></i>
-                    <Link to= "/admin">Home</Link>
+                <CIcon customeClassName="nav-icon" icon={cilHome}></CIcon>
+                    <Link to= "/admin" className='text-decoration-none text-white mx-3'>Home</Link>
                 </CNavItem>
 
                 <div onClick={logout}>
                     <CNavItem href= "#">
-                        <i></i>
-                        <div>logout</div>
+                        <i className='bi bi-box-arrow-left text-white m-2'></i>
+                        <div className='text-decoration-none text-white mx-3'>logout</div>
                     </CNavItem>
                 </div>
             </CSidebarNav>

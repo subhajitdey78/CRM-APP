@@ -1,5 +1,7 @@
-import Sidebar from "../componenets/Sidebar"
 import React from "react"
+import Sidebar from "../componenets/Sidebar"
+import '../styles/admin.css'
+
 function Admin() {
     return (
         <div className= "row bg-light">
