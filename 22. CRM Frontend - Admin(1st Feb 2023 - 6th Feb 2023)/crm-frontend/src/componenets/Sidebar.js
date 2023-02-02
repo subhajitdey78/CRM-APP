@@ -11,12 +11,11 @@ function Sidebar() {
     }
 
     return (
-        <CSidebar unfoldable className= 'vh-100 bg-black'>
+        <CSidebar  className= 'vh-100 bg-black'>
             <CSidebarNav>
                 <CNavTitle className= 'text-light fw-normal'>
                      CRM App
                 </CNavTitle>
-
 
                 <CNavItem href='#'>
                 <CIcon customeClassName="nav-icon" icon={cilHome}></CIcon>
