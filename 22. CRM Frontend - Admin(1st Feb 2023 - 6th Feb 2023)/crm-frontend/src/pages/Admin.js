@@ -5,7 +5,7 @@ import { ExportCsv, ExportPdf } from '@material-table/exporters'
 import '../styles/admin.css';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar'
 import { Modal, Button } from "react-bootstrap";
-import axios  from "axios"
+import axios from "axios";
 
 const BASE_URL = process.env.REACT_APP_SERVER_URL
 
@@ -13,7 +13,9 @@ function Admin() {
     const [userList, setUserList] = useState([])
     const [userDetail, setUserDetail] = useState({})
     const [userModal, setUserModal] = useState(false)
-    const showUserModel = () => setUserModal(true)
+    const [ticketStatusCount, setTicketStatusCount] = useState({})
+    const [message, setMessage] = useState("")
+    const showUserModal = () => setUserModal(true)
     const closeUserModal = () => {
         setUserModal(false)
         setUserDetail({})
@@ -21,11 +23,47 @@ function Admin() {
     const fetchUsers = (userId) => {
         axios.get(BASE_URL + '/crm/api/users/' + userId, {
             headers: {
-                'x-access-token': localStorage.getItem('token')
+                'x-access-token': localStorage.getItem("token")
             }
         }).then(function (response) {
-            if(response.status === 200){
-                setUserList(response.data)
+            if (response.status === 200) {
+                if (userId) {
+                    setUserDetail(response.data[0])
+                    showUserModal()
+                } else
+                    setUserList(response.data)
+            }
+        }).catch(function (error) {
+            console.log(error)
+        })
+    }
+    const updateTicketCounts = (tickets) => {
+        const data = {
+            open: 0,
+            closed: 0,
+            in_progress: 0,
+            blocked: 0,
+        }
+        tickets.map(x => {
+            if (x.status === "OPEN") data.open++
+            else if (x.status === 'IN_PROGRESS') data.in_progress++
+            else if (x.status === 'BLOCKED') data.blocked++
+            else if (x.status === 'CLOSED') data.closed++
+        })
+        setTicketStatusCount(data)
+    }
+
+    const fetchTickets = () => {
+        axios.get(BASE_URL + '/crm/api/tickets/',
+            {
+                headers: {
+                    'x-access-token': localStorage.getItem('token')
+                }
+            }, {
+            'userId': localStorage.getItem('userId')
+        }).then(function (response) {
+            if (response.status === 200) {
+                updateTicketCounts(response.data)
             }
         }).catch(function (error) {
             console.log(error)
@@ -35,19 +73,48 @@ function Admin() {
     useEffect(() => {
         (async () => {
             fetchUsers("")
+            fetchTickets()
         })()
     }, [])
 
-    const updateUserDetail = () => { }
+    const updateUserDetail = () => {
+        const data = {
+            'userType': userDetail.userType,
+            'userStatus': userDetail.userStatus,
+            'name': userDetail.name
+        }
+        axios.put(BASE_URL + '/crm/api/users/' + userDetail.userId,
+            data,
+            {
+                headers: {
+                    'x-access-token': localStorage.getItem('token')
+                }
+            }, {
+            'userId': localStorage.getItem('userId')
+        }).then(function (response) {
+            if (response.status === 200) {
+                setMessage(response.message)
+                let idx = userList.findIndex((obj => obj.userId === userDetail.userId))
+                userList[idx] = userDetail
+                closeUserModal()
+            }
+        }).catch(function (error) {
+            if (error.status === 400)
+                setMessage(error.message)
+            else
+                console.log(error)
+        })
+    }
 
     const changeUserDetail = (e) => {
-        if(e.target.name === 'status')
+        if (e.target.name === 'status')
             userDetail.userStatus = e.target.value
-        else if(e.taget.name === 'name')
-            userDetail.name = e. target.value
-        else if(e.target.name ===  'type')
+        else if (e.target.name === 'name')
+            userDetail.name = e.target.value
+        else if (e.target.name === 'type')
             userDetail.userType = e.target.value
-        setUserDetail(userDetail)   
+        setUserDetail(userDetail)
+        setUserModal(e.target.value)
     }
 
     return (
@@ -58,7 +125,7 @@ function Admin() {
                     <div>
                         {/*Main Admin DashBoard*/}
                         <h3 className="text-primary text-center">Welcome,</h3>
-                        <p className="text-muted text-center">Take a quick look at you admin starts below.</p>
+                        <p className="text-muted text-center">Take a quick look at you admin stats below.</p>
 
                         {/* cards */}
                         <div className="row my-5 mx-2 text-center">
@@ -70,7 +137,7 @@ function Admin() {
                                         <hr />
                                         <div className="row">
                                             <div className="col">
-                                                <h1 className="col text-dark mx-4">8</h1>
+                                                <h1 className="col text-dark mx-4">{ticketStatusCount.open}</h1>
                                             </div>
                                             <div className="col">
                                                 <div style={{ width: 40, height: 40 }}>
@@ -92,7 +159,7 @@ function Admin() {
                                         <h5 className="card-subtitle mb-2"><i class="bi bi-lightning-charge text-warning mx-2"></i>Progress </h5>
                                         <hr />
                                         <div className="row">
-                                            <div className="col">  <h1 className="col text-dark mx-4">4</h1> </div>
+                                            <div className="col">  <h1 className="col text-dark mx-4">{ticketStatusCount.in_progress}</h1> </div>
                                             <div className="col">
                                                 <div style={{ width: 40, height: 40 }}>
                                                     <CircularProgressbar value={80} styles={buildStyles({
@@ -113,7 +180,7 @@ function Admin() {
                                         <h5 className="card-subtitle mb-2"><i class="bi bi-check2-circle text-success mx-2"></i>Closed </h5>
                                         <hr />
                                         <div className="row">
-                                            <div className="col">  <h1 className="col text-dark mx-4">2</h1> </div>
+                                            <div className="col">  <h1 className="col text-dark mx-4">{ticketStatusCount.closed}</h1> </div>
                                             <div className="col">
                                                 <div style={{ width: 40, height: 40 }}>
                                                     <CircularProgressbar value={80} styles={buildStyles({
@@ -134,7 +201,7 @@ function Admin() {
                                         <h5 className="card-subtitle mb-2"><i class="bi bi-slash-circle text-secondary mx-2"></i>Blocked </h5>
                                         <hr />
                                         <div className="row">
-                                            <div className="col">  <h1 className="col text-dark mx-4">2</h1> </div>
+                                            <div className="col">  <h1 className="col text-dark mx-4">{ticketStatusCount.blocked}</h1> </div>
                                             <div className="col">
                                                 <div style={{ width: 40, height: 40 }}>
                                                     <CircularProgressbar value={20} styles={buildStyles({
@@ -164,7 +231,6 @@ function Admin() {
                                 {
                                     title: "Name",
                                     field: "name",
-
                                 },
                                 {
                                     title: "EMAIL",
@@ -217,19 +283,19 @@ function Admin() {
                         {/* Modal for editing the users */}
                         {userModal ? (
                             <Modal
-                            show = {userModal}
-                            onHide = {closeUserModal}
-                            backdrop= "sattic"
-                            keyboard={false}
-                            centered        
+                                show={userModal}
+                                onHide={closeUserModal}
+                                backdrop="static"
+                                keyboard={false}
+                                centered
                             >
                                 <Modal.Header closeButton>
                                     <Modal.Title>Edit Details</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body>
-                                <form onSubmit={updateUserDetail} >
+                                    <form onSubmit={updateUserDetail} >
 
-                                    <div className="p-1">
+                                        <div className="p-1">
                                             <h5 className="card-subtitle mb-2 text-primary lead">User ID: {userDetail.userId}</h5>
                                             <hr />
                                             <div class="input-group mb-3">
@@ -264,14 +330,16 @@ function Admin() {
 
                                             </div>
 
-                                    </div>
+                                        </div>
 
-                                </form>
+                                    </form>
                                 </Modal.Body>
                                 <Modal.Footer>
-
                                     <Button variant="secondary" onClick={() => closeUserModal()}>
-                                        close
+                                        Close
+                                    </Button>
+                                    <Button variant="primary" onClick={() => updateUserDetail()}>
+                                        Update
                                     </Button>
                                 </Modal.Footer>
                             </Modal>
