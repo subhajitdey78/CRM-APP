@@ -13,6 +13,7 @@ const updateTicketCounts = (tickets, setTicketStatusCount) => {
         else if (x.status === 'CLOSED') data.closed++
     })
     data.total = data.open + data.in_progress + data.blocked + data.closed
+    data.total = (data.total === 0) ? 1 : data.total
     setTicketStatusCount(data)
 }
 
