@@ -1,8 +1,10 @@
-import React, {useState} from "react";
+import React, { useEffect, useState} from "react";
 import Sidebar from "../componenets/Sidebar"
 import TicketsCard from "../componenets/TicketsCard";
 import MaterialTable from "@material-table/core";
-import { ExportCsv, ExportPdf } from '@material-table/exporters';
+import { ExportCsv, ExportPdf } from "@material-table/exporters";
+import fetchTickets from "../utils/fetchTickets"; 
+import updateTicketCounts from "../utils/updateTicketCounts";
 
 function Enginner() {
     const [ticketUpdateModal, setTicketUpadteModal] = useState(false)
@@ -14,6 +16,15 @@ function Enginner() {
         total: 1
         })
         const [message, setMessage] = useState("")
+        const [ticketDetails, setTicketDetails] = useState([])
+
+        useEffect(() => {
+            (async () => {
+                let tickets = await fetchTickets(localStorage)
+                updateTicketCounts(tickets, setTicketStatusCount)
+                setTicketDetails(tickets)
+           })()
+        },[]) 
 
     return (
         <div className="bg-light">
@@ -65,6 +76,8 @@ function Enginner() {
                 <hr />
                 <p className="text-success">{message}</p>
                 <MaterialTable
+                   data={ticketDetails}
+                   title="TICKETS ASSIGNED TO YOU"
                     columns={[
                         {
                             title: "Ticket ID",
@@ -101,7 +114,25 @@ function Enginner() {
 
                             },
                         },
-                    ]}          
+                    ]}  
+                    options={{
+                        filtering: true,
+                        sorting: true,
+                        exportMenu: [{
+                            label: 'Export PDF',
+                            exportFunc: (cols, datas) => ExportPdf(cols, datas, 'ticketsRecords')
+                    }, {
+                        label: 'Export CSV',
+                        exportFun: (cols, datas) => ExportCsv(cols, datas, 'userRecord')
+                    }],
+                    headerStyle: {
+                        backgroundColor: 'darkblue',
+                        color: '#FFF'
+                    },
+                    rowStyle: { //#222222, #333333, #444444
+                        backgroundColor: '#EEE'
+                    }
+                }}        
                 />
                 </div>
             </div>
