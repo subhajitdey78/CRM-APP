@@ -5,7 +5,11 @@ import MaterialTable from "@material-table/core";
 import { ExportCsv, ExportPdf } from "@material-table/exporters";
 import fetchTickets from "../utils/fetchTickets"; 
 import updateTicketCounts from "../utils/updateTicketCounts";
-import { Modal } from 'react-bootstrap'
+import { Button, Modal } from 'react-bootstrap';
+import '../styles/engineer.css';
+import axios from "axios";
+
+const BASE_URL = process.env.REACT_APP_SERVER_URL
 
 function Enginner() {
     const [ticketUpdateModal, setTicketUpadteModal] = useState(false)
@@ -20,11 +24,15 @@ function Enginner() {
         const [ticketDetails, setTicketDetails] = useState([])
         const [selectedTicket, setSeletedTicket] = useState({})
 
+        const fetchAndUpdateTickets = async () => {
+            let tickets = await fetchTickets(localStorage)
+            updateTicketCounts(tickets, setTicketStatusCount)
+            setTicketDetails(tickets)
+        }
+
         useEffect(() => {
             (async () => {
-                let tickets = await fetchTickets(localStorage)
-                updateTicketCounts(tickets, setTicketStatusCount)
-                setTicketDetails(tickets)
+               await fetchAndUpdateTickets()
            })()
         },[]) 
 
@@ -45,6 +53,33 @@ function Enginner() {
             else if(e.target.name === "ticketPriority")
                  selectedTicket.ticketPriority = e.target.value
             setSeletedTicket({ ...selectedTicket })            
+        }
+
+        const updateTicket = (e) => {
+            e.preventDefault()
+            axios.put(BASE_URL + '/crm/api/tickets/' + selectedTicket.id, selectedTicket, {
+                headers: {
+                    'x-access-token': localStorage.getItem('token')
+                }
+            }, {
+                'userId' :localStorage.getItem("userId")
+            }).then (
+                (response) => {
+                    setMessage("Ticket Updated Successfully")
+                    closeTicketUpdationModal();
+                    fetchAndUpdateTickets()
+                }
+            ).catch(
+                (error) => {
+                    if (error.status === 400)
+                      setMessage(error.message)
+                    else if(error.status === 400)
+                      setMessage("Authorization error, retry logging in")
+                    closeTicketUpdationModal()
+                    console.log(error.message)                    
+                }
+            )
+
         }
 
     return (
@@ -169,19 +204,41 @@ function Enginner() {
                                 <Modal.Title>UPDATE TICKET</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                <form onSubmit={() => console.log("submitted")}>
-                                    <div className="p-1">
-                                        <h5 className="card-subtitle mb-2 text-primary lead">Ticket ID: {selectedTicket.id}</h5>
+                            <form>
+                                    <div className="py-1">
+                                        <h5 className="card-subtitle mb-3 text-primary lead">Ticket ID: {selectedTicket.id}</h5>
                                         <hr />
-                                        <div  className="input-group mb-3">
+                                        <div className="input-group mb-3">
                                             <span className="input-group-text" id="basic-addon2">Title</span>
-                                            <input type='text' className="form-control" name='title' value={selectedTicket.title} onChange={onTicketUpdate} required/>
+                                            <input type='text' className="form-control" name='title' value={selectedTicket.title} onChange={onTicketUpdate} required />
                                         </div>
-
+                                        <div className="input-group mb-3">
+                                            <span className="input-group-text" id="basic-addon2">Assignee</span>
+                                            <input type='text' className="form-control" value={selectedTicket.assignee} disabled />
+                                        </div>
+                                        <div className="input-group mb-3">
+                                            <span className="input-group-text" id="basic-addon2">Status</span>
+                                            <select className="form-select" name="status" value={selectedTicket.status} onChange={onTicketUpdate}>
+                                                <option value="OPEN">OPEN</option>
+                                                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                                                <option value="BLOCKED">BLOCKED</option>
+                                                <option value="CLOSED">CLOSED</option>
+                                            </select>
+                                        </div>
+                                        <div className="input-group mb-3">
+                                            <span className="input-group-text" id="basic-addon2">PRIORITY</span>
+                                            <input type="text" className="form-control" name="ticketPriority" value={selectedTicket.ticketPriority} onChange={onTicketUpdate} required />
+                                        </div>
+                                        <div className="amber-textarea active-amber-textarea-2">
+                                            <textarea id="form16" className='md-textarea form-control' rows='3' name="description" placeholder="Description" value={selectedTicket.description} onChange={onTicketUpdate} required />
+                                        </div>
                                     </div>
                                 </form>
                             </Modal.Body>
-                            <Modal.Footer></Modal.Footer>
+                            <Modal.Footer>
+                            <Button className="mr-4" variant="Secondary" onClick={closeTicketUpdationModal}>Cancel</Button>
+                            <Button type="submit" onClick={updateTicket}>Update</Button>
+                            </Modal.Footer>
                         </Modal>
                     ): (
                         ""
