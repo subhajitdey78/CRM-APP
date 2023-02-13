@@ -5,6 +5,7 @@ import MaterialTable from "@material-table/core";
 import { ExportCsv, ExportPdf } from "@material-table/exporters";
 import fetchTickets from "../utils/fetchTickets"; 
 import updateTicketCounts from "../utils/updateTicketCounts";
+import { Modal } from 'react-bootstrap'
 
 function Enginner() {
     const [ticketUpdateModal, setTicketUpadteModal] = useState(false)
@@ -17,6 +18,7 @@ function Enginner() {
         })
         const [message, setMessage] = useState("")
         const [ticketDetails, setTicketDetails] = useState([])
+        const [selectedTicket, setSeletedTicket] = useState({})
 
         useEffect(() => {
             (async () => {
@@ -25,6 +27,25 @@ function Enginner() {
                 setTicketDetails(tickets)
            })()
         },[]) 
+
+        const closeTicketUpdationModal = () => setTicketUpadteModal(false)
+        const editTicket = (ticket) => {
+            const ticketCopy = {...ticket}
+            setSeletedTicket(ticketCopy)
+            setTicketUpadteModal(true)
+
+        }
+        const onTicketUpdate = (e) => {
+            if(e.target.name === 'title') 
+            selectedTicket.title = e.target.value
+            else if(e.target.name === 'description')
+                 selectedTicket.description = e. target.value
+            else if(e.target.name === "status")
+                 selectedTicket.status = e.target.value
+            else if(e.target.name === "ticketPriority")
+                 selectedTicket.ticketPriority = e.target.value
+            setSeletedTicket({ ...selectedTicket })            
+        }
 
     return (
         <div className="bg-light">
@@ -76,6 +97,7 @@ function Enginner() {
                 <hr />
                 <p className="text-success">{message}</p>
                 <MaterialTable
+                  onRowClick={(event, rowData) => editTicket(rowData)} 
                    data={ticketDetails}
                    title="TICKETS ASSIGNED TO YOU"
                     columns={[
@@ -98,7 +120,7 @@ function Enginner() {
                         },
                         {
                             title: "PRIORITY",
-                            field: "reporter",
+                            field: "ticketPriority",
                         }, {
                             title: "ASSIGNEE",
                             field: "assignee",
@@ -134,6 +156,37 @@ function Enginner() {
                     }
                 }}        
                 />
+                {
+                    ticketUpdateModal? (
+                        <Modal
+                           show={ticketUpdateModal}
+                           onHide={closeTicketUpdationModal}
+                           backdrop="static"
+                           keyboard={false}
+                           centered
+                        >
+                            <Modal.Header closeButton>
+                                <Modal.Title>UPDATE TICKET</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <form onSubmit={() => console.log("submitted")}>
+                                    <div className="p-1">
+                                        <h5 className="card-subtitle mb-2 text-primary lead">Ticket ID: {selectedTicket.id}</h5>
+                                        <hr />
+                                        <div  className="input-group mb-3">
+                                            <span className="input-group-text" id="basic-addon2">Title</span>
+                                            <input type='text' className="form-control" name='title' value={selectedTicket.title} onChange={onTicketUpdate} required/>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </Modal.Body>
+                            <Modal.Footer></Modal.Footer>
+                        </Modal>
+                    ): (
+                        ""
+                        )
+                }
                 </div>
             </div>
     );
