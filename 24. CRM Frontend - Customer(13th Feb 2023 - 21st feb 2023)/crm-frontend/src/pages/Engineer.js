@@ -10,7 +10,7 @@ import EditTicketModal from"../componenets/EditTicketModal";
 
 const BASE_URL = process.env.REACT_APP_SERVER_URL
 
-function Enginner() {
+function Engineer() {
     const [ticketUpdateModal, setTicketUpadteModal] = useState(false)
     const [ticketStatusCount, setTicketStatusCount] = useState({
         open: 0,
@@ -150,4 +150,4 @@ function Enginner() {
     );
 }
 
-export default Enginner;
+export default Engineer;
