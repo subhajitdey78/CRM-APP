@@ -1,0 +1,44 @@
+const mongoose = require('mongoose')
+
+/**
+ * Defines the schema of the theatre resource to be stored in the DB
+ */
+const theatreSchema = new mongoose.Schema({
+    
+    name: {
+        type: String,
+        required: true,
+    },
+    description: {
+        type: String,
+        required: true
+
+    },
+    city: {
+        type: String,
+        required: true
+    },
+    pinCode: {
+        type: Number,
+        required: true
+    },
+    createdAt: {
+        //I want to default to a new date
+        type: Date,
+        immutable: true, // Thsi will ensure the createdAt column is never updated but once in the start
+        default: () => {
+            return Date.now();
+        }
+    },
+    updatedAt: {
+        type: Date,
+        default: () => {
+            return Date.now();
+        }
+    }
+
+}, {
+    //versionKey: false // this will remove the _v field, which indicates the interval revision of the document    
+})
+
+module.exports = mongoose.model("Theatre", theatreSchema)
