@@ -11,10 +11,10 @@ exports.signup = async function (req, res) {
         // if customer, userStatus = approved
         // else pending
         if (!req.body.userType ||
-              req.body.userType === constants.userTypes.customer)
-              userStatus = constants.userStatus.approved
-            else
-              userStatus = constants.userStatus.pending
+            req.body.userType === constants.userTypes.customer)
+            userStatus = constants.userStatus.approved
+        else
+            userStatus = constants.userStatus.pending
     }
 
     // Create a new user
@@ -30,7 +30,7 @@ exports.signup = async function (req, res) {
         let response = {
             name: user.name,
             id: user._id,
-            userid: user.userId,
+            userId: user.userId,
             email: user.email,
             userType: user.userType,
             userStatus: user.userStatus
@@ -45,16 +45,16 @@ exports.signup = async function (req, res) {
 
 exports.signin = async function (req, res) {
     /**
-     * steps
-     * 1. check the userId in the collection
-     * 2. check the satus of the user
-     * 3. check the password
+     * Steps
+     * 1. Check the userId in the Collection
+     * 2. Check the status of the user
+     * 3. Check the password
      * 4. Send the JWT Token back
-     * */
+     *  */
     try {
         const user = await User.findOne({ userId: req.body.userId })
-        if(user === null) {
-            res.status(401).send("User with the given userid not found!!")
+        if (user === null) {
+            res.status(401).send("User with the given userId not found!!")
             return
         }
 
@@ -66,25 +66,25 @@ exports.signin = async function (req, res) {
         const isPasswordValid = bcrypt.compareSync(req.body.password,
             user.password)
 
-            if(!isPasswordValid) {
-                res.status(403).send("Invalid Password")
-                return
-            }
+        if (!isPasswordValid) {
+            res.status(403).send("Invalid Password")
+            return
+        }
 
-            const token = jwt.sign({ id: user.userId },
-                authConfig.secret,
-                { expiresIn: 120 })
+        const token = jwt.sign({ id: user.userId },
+            authConfig.secret,
+            { expiresIn: 120 })
 
-                res.status(200).send({
-                    name: user.name,
-                    userid: user.userId,
-                    email: user.email,
-                    userType: user.userType,
-                    userStatus: user.userStatus,
-                    accessToken: token
-                })
-            } catch (e) {
-                console.log(e.message)
-                res.status(400).send("Internal server Error")
-            }
+        res.status(200).send({
+            name: user.name,
+            userId: user.userId,
+            email: user.email,
+            userTypes: user.userType,
+            userStatus: user.userStatus,
+            accessToken: token
+        })
+    } catch (e) {
+        console.log(e.message)
+        res.status(400).send("Internal Server Error")
     }
+}

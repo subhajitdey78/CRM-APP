@@ -1,10 +1,10 @@
-const serverConfig = require("./configs/server.config")
+const serverConfig = require('./configs/server.config')
 const express = require('express')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const dbConfig = require('./configs/db.config')
 const Movie = require('./models/movie.model')
-const Theatre = require ('./models/theatre.model')
+const Theatre = require('./models/theatre.model')
 const User = require('./models/user.model')
 const bcrypt = require('bcryptjs')
 
@@ -21,13 +21,13 @@ app.use(bodyParser.urlencoded({ extended: true }))
 mongoose.connect(dbConfig.DB_URL, () => {
     console.log('connected to Mongo DB')
     init();
-}, err=> {
+}, err => {
     console.log("Error: ", err.message)
 })
 
 /**
  * This function will initialize the state of the 
- * movie booking dtatabase
+ * movie booking database
  */
 async function init() {
     await Movie.collection.drop();
@@ -36,7 +36,7 @@ async function init() {
             name: "Bachhan Pandey",
             description: "Comedy Masala Movie",
             casts: ["Akshay Kumar", "Jacqueline Fernandiz"],
-            director: "Farhad samji",
+            director: "Farhad Samji",
             trailerUrl: "http://bacchanpandey/trailers/1",
             posterUrl: "http://bacchanpandey/posters/1",
             language: "Hindi",
@@ -64,13 +64,13 @@ async function init() {
             language: "Hindi",
             releaseDate: "04-03-2022",
             releaseStatus: "RELEASED"
-        })
+        });
         const movie4 = await Movie.create({
             name: "Radhe Shyam",
             description: "Comedy Drama Movie",
             casts: ["Prabhas", "Pooja Hegde"],
             director: "Radha Krishna Kumar",
-            trailerUrl: "http://RadhaShyam/trailers/1",
+            trailerUrl: "http://RadheShyam/trailers/1",
             posterUrl: "http://RadheShyam/posters/1",
             language: "Hindi",
             releaseDate: "11-03-2022",
@@ -89,8 +89,8 @@ async function init() {
         });
 
         console.log("Movies inserted in the db");
-    
-        //Createing few intial sets of Theatres
+
+        //Creating few intial sets of Theatres
         await Theatre.collection.drop();
         await Theatre.create({
             name: "FunCinemas",
@@ -118,19 +118,19 @@ async function init() {
             name: "Vaibhav Theatre",
             city: "Bangalore",
             description: "Economical theatre",
-            pinCode: 560095,
+            pinCode: 560094,
             movies: [movie5._id, movie4._id]
         });
         await Theatre.create({
-            name: "INox",
-            city: "pune",
+            name: "Inox",
+            city: "Pune",
             description: "Top class theatre",
             pinCode: 411001,
             movies: [movie5._id, movie2._id]
         });
         await Theatre.create({
             name: "Sonmarg Theatre",
-            city: "pune",
+            city: "Pune",
             description: "Economical theatre",
             pinCode: 411042,
             movies: [movie3._id, movie2._id]
@@ -147,9 +147,9 @@ async function init() {
         await User.collection.drop()
 
         const user = await User.create({
-            name: 'Subhajit',
+            name: 'Anshul',
             userId: 'admin',
-            email: 'Subhajit2gmail.com',
+            email: 'anshul@gmail.com',
             userType: 'ADMIN',
             password: bcrypt.hashSync('Welcome', 8)
         })
@@ -164,7 +164,7 @@ async function init() {
  * Importing the routes
  */
 require('./routes/movie.routes')(app)
-require('./routes/threatre.routes')(app)
+require('./routes/theatre.routes')(app)
 require('./routes/auth.routes')(app)
 require('./routes/user.routes')(app)
 

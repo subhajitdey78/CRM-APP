@@ -34,19 +34,19 @@ const isAdmin = async (req, res, next) => {
         })
 
         if (user &&
-             user.userType === constants.userTypes.admin)
-             next()
-            else {
-                res.status(403).send({
-                    message: "Admin Role Required"
-                })
-                return
-            }
+            user.userType === constants.userTypes.admin)
+            next()
+        else {
+            res.status(403).send({
+                message: "Admin Role Required!"
+            })
+            return
+        }
     } catch (e) {
         console.log(e.message)
-        res.status(500).send("Internal server Error!")
+        res.status(500).send("Internal Server Error!")
     }
-} 
+}
 
 const authJwt = {
     verifyToken: verifyToken,

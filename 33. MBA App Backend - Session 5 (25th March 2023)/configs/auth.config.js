@@ -1,3 +1,3 @@
 module.exports = {
-    secret: "Subhajit-secret-code-98982434"
+    secret: "Subhajit-secret-Code-98982434"
 }

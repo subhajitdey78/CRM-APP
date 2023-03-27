@@ -12,20 +12,20 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
     },
     email: {
         type: String,
         required: true,
-        lowercase: true, // it will convert the email into the lower case and then store in the db,
-        milLength: 10, // anything less then 10 will fail
+        lowercase: true, // it will covert the email into the lower case and then store in the db,
+        minLength: 10,  // anything less than 10 will fail
         unique: true
 
     },
     createdAt: {
-        //I want to dafult to a new date
+        // I want to default to a new date
         type: Date,
-        immutable: true, // This will ensure the createdAt column is never updated but once in the start
+        immutable: true,  // This will ensure the createdAt column is never updated but once in the start
         default: () => {
             return Date.now();
         }
