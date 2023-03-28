@@ -7,6 +7,7 @@ const Movie = require('./models/movie.model')
 const Theatre = require('./models/theatre.model')
 const User = require('./models/user.model')
 const bcrypt = require('bcryptjs')
+const constants = require('./utils/constants')
 
 // Initializing express
 const app = express()
@@ -158,6 +159,21 @@ async function init() {
     } catch (e) {
         console.log(e.message)
     }
+
+try {
+
+    const user = await User.create({
+        name: 'Gauri',
+        userId: 'customer',
+        email: 'gauri@gmail.com',
+        userType: constants.userTypes.customer,
+        password: bcrypt.hashSync('Welcome', 8)
+    })
+
+    console.log('Customer user created')
+} catch (e) {
+    console.log(e.message)
+   }
 }
 
 /**
