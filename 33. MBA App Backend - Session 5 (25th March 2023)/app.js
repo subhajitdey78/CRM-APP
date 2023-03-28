@@ -147,9 +147,9 @@ async function init() {
         await User.collection.drop()
 
         const user = await User.create({
-            name: 'Anshul',
+            name: 'Subhajit',
             userId: 'admin',
-            email: 'anshul@gmail.com',
+            email: 'Subhajit@gmail.com',
             userType: 'ADMIN',
             password: bcrypt.hashSync('Welcome', 8)
         })
