@@ -46,9 +46,9 @@ exports.createPayment = async (req, res) => {
     });
 
     var bookingTime = booking.createdAt;
-    var currentTime = date.now();
+    var currentTime = Date.now();
 
-    var minutes = Math.floor(((currentTime = bookingTime) / 100) / 60);
+    var minutes = Math.floor(((currentTime - bookingTime) / 100) / 60);
 
     if(minutes > 5) {
         booking.status = constants.bookingStatus.expired;

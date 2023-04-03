@@ -21,7 +21,7 @@ validatePaymentRequestBody = async (req, res, next) => {
     }
 
     //Validate if the booking exists
-    const booking = await Booking.findOneAndUpdate({ _id: req.body.bookingId });
+    const booking = await Booking.findOne({ _id: req.body.bookingId });
     if(booking == null) {
         return res.status(400).send({
             message: "Failed! Booking Id passed doesn't exist !"
