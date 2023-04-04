@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 /**
  * Defines the shema of the payment resourse to be stored in the DB
  */
-const paymentSchema = new mongoose .Schema({
+const paymentSchema = new mongoose.Schema({
 
     bookingId: {
         type: mongoose.SchemaTypes.ObjectId,

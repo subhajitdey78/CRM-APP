@@ -13,7 +13,6 @@ mongoose.connect(dbConfig.DB_URL,
    
     require("./routes/ticketNotification.route")(app)
     
-    
     app.listen(3030, () => {
         console.log("Application started on the port number 3030")
     })

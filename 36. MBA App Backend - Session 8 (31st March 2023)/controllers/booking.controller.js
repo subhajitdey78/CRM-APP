@@ -49,7 +49,7 @@ exports.createBooking = async (req, res) => {
     })
     var bookingObject = {
         theatreId: req.body.theatreId,
-        movieId: req.body.movieid,
+        movieId: req.body.movieId,
         userId: user._id,
         timing: req.body.timing,
         noOfSeats: req.body.noOfSeats,
@@ -61,7 +61,7 @@ exports.createBooking = async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).send({
-            message: "internal error while creating the booking"
+            message: "Internal error while creating the booking"
         })
     }
 

@@ -1,4 +1,4 @@
-const TicktNotificationModel = require("../models/ticketNotification.model")
+const TicketNotificationModel = require("../models/ticketNotification.model")
 
 /**
  * This controller adds a new unset notification to our db
@@ -13,7 +13,7 @@ exports.acceptNotificationRequest = async(req, res) => {
    }
    
    try {
-    const notification = await TicktNotificationModel.create(
+    const notification = await TicketNotificationModel.create(
         notificationObject
     )
     res.status(200).send({
@@ -39,7 +39,7 @@ exports.getNotificationStatus = async (req, res) => {
     const reqId = req.params.reqId
 
     try{
-        const notification  = await TicktNotificationModel.findOne({
+        const notification  = await TicketNotificationModel.findOne({
             ticketId: reqId
         })
 

@@ -23,8 +23,8 @@ const bookingSchema = new mongoose.Schema({
         ref: "User"
 
     },
-    timing: {
-        type:String,
+    timing: { 
+        type: String,
         required: true
 
     },
@@ -40,7 +40,7 @@ const bookingSchema = new mongoose.Schema({
             return Date.now();
         }
     },
-    upadtedAt: {
+    updatedAt: {
         type: Date,
         default: () => {
             return Date.now();
@@ -48,7 +48,7 @@ const bookingSchema = new mongoose.Schema({
     },
     noOfSeats: {
         type: Number,
-        required:true,
+        required: true,
     },
     totalCost: {
         type: Number

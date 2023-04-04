@@ -1,6 +1,8 @@
 const Booking = require("../models/booking.model")
-const payment = require("../models/payment.model");
-
+const Payment = require("../models/payment.model");
+const User = require("../models/user.model")
+const { sendEmail } = require("../utils/NotificationClient")
+const constants = require("../utils/constants")
 exports.getAllpayments = async (req, res) => {
 
     const queryObj = {}
@@ -17,7 +19,7 @@ exports.getAllpayments = async (req, res) => {
 
 
     try {
-        const payments = await payment.find(queryObj);
+        const payments = await Payment.find(queryObj);
         res.status(200).send(payments);
     } catch (e) {
         console.log(e.message)
@@ -28,12 +30,12 @@ exports.getAllpayments = async (req, res) => {
 
 exports.getPaymentById = async (req, res) => {
     try {
-        const payments = await payment.findOne({ _id: req.params.id });
+        const payments = await Payment.findOne({ _id: req.params.id });
         res.status(200).send(payments);
     } catch (err) {
         console.log(err.message);
         res.status(500).send({
-            message: "internal error while searching for the payments"
+            message: "Internal error while searching for the payments"
         })
     }
 
@@ -65,17 +67,23 @@ exports.createPayment = async (req, res) => {
         status: constants.paymentStatus.success,
     }
     try {
-        const payment = await payment.create(paymentObject);
+        const payment = await Payment.create(paymentObject);
         /**
          * upadte the booking status
          */
         booking.status = constants.bookingStatus.completed;
         await booking.save();
+
+        const user = await User.findOne({ "userId" : req.userId })
+        sendEmail(payment._id, "Payment successful for the booking id: " 
+        + req.body.bookingId, JSON.stringify(booking), user.email, 
+        "mba-no-reply@mba.com")
+        
         return res.status(201).send(payment);
     } catch (err) {
         console.log(err);
         res.status(500).send({
-            message: "internal error while creating the booking"
+            message: "Internal error while creating the booking"
         })
     }
 }
