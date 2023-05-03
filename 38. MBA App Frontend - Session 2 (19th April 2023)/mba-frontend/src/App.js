@@ -1,11 +1,10 @@
-import logo from './logo.svg';
-import './App.css';
-import AppRouter from '../components/routes/appRoutes';
+import "./App.css";
+import ApiRouter from "../src/components/routes/AppRoutes";
 
-function App() {
-  return (
-   <AppRouter />
-  );
+function App () {
+    return (
+        <ApiRouter />
+    )
 }
 
 export default App;
