@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "../routes/LandingPage/LandingPage";
+import Login  from '../Auth/Auth'
 
 const AppRoutes = () => {
     return (
@@ -7,8 +8,13 @@ const AppRoutes = () => {
             <Routes>
                 <Route
                 exact
-                path="/"
+                path='/'
                 element={<LandingPage />}
+                />
+                <Route
+                exact
+                path='/Login'
+                element={<Login/>}
                 />
             </Routes>
         </Router>

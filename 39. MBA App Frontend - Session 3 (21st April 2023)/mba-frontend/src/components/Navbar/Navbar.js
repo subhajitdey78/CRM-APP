@@ -1,7 +1,9 @@
 import { CButton } from '@coreui/react'
 import SuggestionInputSearch from 'suggestion-react-input-search'
+import { useNavigate } from 'react-router-dom'
 
 const Navbar = (props) => {
+    const navigate = useNavigate()
     return (
         <div className='bg-dark px-2'>
             <div className='row text-center'>
@@ -16,7 +18,7 @@ const Navbar = (props) => {
                     />
                 </div>
                 <div className='col-lg-2 col-sm-4'>
-                    <CButton type='submit' color='danger' className='px-3'>
+                    <CButton type='submit' color='danger' className='px-3' onSubmit={() => useNavigate('/login')}>
                         Login
                     </CButton>   
                 </div>
