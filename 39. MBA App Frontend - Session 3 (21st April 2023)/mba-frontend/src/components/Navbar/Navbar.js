@@ -18,7 +18,7 @@ const Navbar = (props) => {
                     />
                 </div>
                 <div className='col-lg-2 col-sm-4'>
-                    <CButton type='submit' color='danger' className='px-3' onSubmit={() => useNavigate('/login')}>
+                    <CButton type='submit' color='danger' className='px-3' onClick={() => navigate('/login')}>
                         Login
                     </CButton>   
                 </div>

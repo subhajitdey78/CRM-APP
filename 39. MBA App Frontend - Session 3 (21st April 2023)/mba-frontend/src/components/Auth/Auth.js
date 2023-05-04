@@ -1,7 +1,13 @@
-import Reaxt, { useState } from 'react'
-
+import React, { useState } from 'react'
+import { Dropdown, DropdownButton } from "react-bootstrap"
 const Login = () => {
     const [showSignup, setShowSignup] = useState(false)
+    const [userSignupData, setUserSignupData] = useState({})
+    const [userType, setUserType] = useState("CUSTOMER")
+
+const handleSelect = (e) => {
+    setUserType(e)       
+    };
 
     const signupFn = (e) => {
         console.log(e)
@@ -9,6 +15,17 @@ const Login = () => {
 
     const loginFn = (e) => {
         console.logh(e)
+    }
+
+    const updateSignupData = (e) => {
+        userSignupData[e.target.id] = e.target.value;
+    }
+
+    const  toggleSignup = () => {
+        setShowSignup(!showSignup)
+        if(showSignup) {
+            setUserSignupData([])
+        }
     }
 
     return (
@@ -20,15 +37,31 @@ const Login = () => {
                 <div className='row m-2'>
                     <h4 className='text-center'>{showSignup ? 'Sign up' : 'Login'}</h4>
                     <form onSubmit={showSignup ? signupFn: loginFn}>
-                        <div>UserId</div>
-                        <input>password</input>
-                        {showSignup && <>
-                        <div>Username</div>
-                        <div>Email</div>
-                        <div>UserType</div>
-                        </>}
+                        <input type='text' className='form-control my-2' placeholder='User Id' id='userId' onChange={updateSignupData} autoFocus required></input>
+                        <input type='password' className='form-control my-2' placeholder="Password" id="password" onChange={updateSignupData} required></input>
+                        {showSignup && <div>
+                        <input type='text' className='form-control my-2' placeholder='Username' id='usernmae' onChange={updateSignupData}  required></input>
+                        <input type='text' className='form-control my-2' placeholder='Email' id='Email' onClick={updateSignupData} required></input>
+                        <div className='row'>
+                            <div className='col'>
+                                <span >User Type</span>
+                            </div>
+                            <div className='col'>
+                                <DropdownButton
+                                align='end'
+                                title={userType}
+                                id="userType"
+                                onSelect={handleSelect}
+                                variant="light"
+                                >
+                                    <Dropdown.Item eventKey="CUSTOMER">CUSTOMER</Dropdown.Item>
+                                    <Dropdown.Item eventKey="CLIENT">CLIENT</Dropdown.Item>
+                                </DropdownButton>
+                            </div> 
+                        </div>
+                        </div>}
                         <div>Submit</div>
-                        <div>Toggle between Login/Signup</div>
+                        <div className='text-primary signup-btn text-center' onClick={toggleSignup}>{showSignup ? 'Already have an Account ? Login' : "Don't have an Account? Signup"}</div>
                         <div>Message</div>
                     </form>
                 </div>
@@ -52,6 +85,6 @@ const Login = () => {
         <div>Footer</div>
         </div>
     )
-}
+    }
 
 export default Login
