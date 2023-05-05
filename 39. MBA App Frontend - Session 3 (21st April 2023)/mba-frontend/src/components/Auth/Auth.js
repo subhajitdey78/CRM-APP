@@ -1,21 +1,36 @@
 import React, { useState } from 'react'
 import { Dropdown, DropdownButton } from "react-bootstrap"
+import { useNavigate } from 'react-router-dom'
+import {signIn, signUp} from "../Auth/index"
 const Login = () => {
     const [showSignup, setShowSignup] = useState(false)
     const [userSignupData, setUserSignupData] = useState({})
     const [userType, setUserType] = useState("CUSTOMER")
+    const [message, setMessage] = useState("Welcome!")
+    const navigate = useNavigate();
 
-const handleSelect = (e) => {
-    setUserType(e)       
-    };
-
-    const signupFn = (e) => {
-        console.log(e)
+    const redirectUrl = () => {
+        if(localStorage.getItem("UserType") === "CUSTOMER")
+        navigate('/')
+        else if(localStorage.get("UserType") === "CLIENT")
+        navigate('/client')
+        else if(localStorage.get("UserType") === "ADMIN")
+        navigate('/admin')
     }
 
-    const loginFn = (e) => {
-        console.logh(e)
+    const handleSelect = (e) => {
+        setUserType(e)
     }
+
+    const loginFn = async (e) => {
+        e.preventDefault()
+        const data = {
+            userId: userSignupData.useId,
+            passpord: userSignupData.password
+        }
+        const result = await signIn(data)
+        redirectUrl() 
+      }
 
     const updateSignupData = (e) => {
         userSignupData[e.target.id] = e.target.value;
@@ -36,15 +51,15 @@ const handleSelect = (e) => {
             <div className='card m-5 p-5'>
                 <div className='row m-2'>
                     <h4 className='text-center'>{showSignup ? 'Sign up' : 'Login'}</h4>
-                    <form onSubmit={showSignup ? signupFn: loginFn}>
+                    <form  className='d-flex flex-column align-items-center' onSubmit={showSignup ? signupFn: loginFn}>
                         <input type='text' className='form-control my-2' placeholder='User Id' id='userId' onChange={updateSignupData} autoFocus required></input>
                         <input type='password' className='form-control my-2' placeholder="Password" id="password" onChange={updateSignupData} required></input>
-                        {showSignup && <div>
+                        {showSignup && <div className='w-100'>
                         <input type='text' className='form-control my-2' placeholder='Username' id='usernmae' onChange={updateSignupData}  required></input>
                         <input type='text' className='form-control my-2' placeholder='Email' id='Email' onClick={updateSignupData} required></input>
-                        <div className='row'>
+                        <div className='row d-flex align-center justify-content-betwwen w-100'>
                             <div className='col'>
-                                <span >User Type</span>
+                                <span>User Type</span>
                             </div>
                             <div className='col'>
                                 <DropdownButton
@@ -60,9 +75,9 @@ const handleSelect = (e) => {
                             </div> 
                         </div>
                         </div>}
-                        <div>Submit</div>
+                        <input type='submit'  className='form-control btn btn-primary w-50' value={showSignup? "Sign Up" : "Log In"}></input>
                         <div className='text-primary signup-btn text-center' onClick={toggleSignup}>{showSignup ? 'Already have an Account ? Login' : "Don't have an Account? Signup"}</div>
-                        <div>Message</div>
+                        <div className='auth-error-msg text-danger text-center'>{message}</div>
                     </form>
                 </div>
             </div>
